@@ -1,28 +1,23 @@
 # Gaugau
-====================================
+** An easy and simple way to solve linear equations using Gauss-Jordan methods in Java.**
 
-# A Linear Equation Solver using Gauss-Jordan Elimination Method
-An easy and simple way to solve linear equations using--currently only--Gauss-Jordan methods in Java. I found it hard find a Java library to solve linear equations that uses more than 3 variables so then I make one. And actually this is a code used for my 6th term final project of Text Processing subject, then modified and remixed then ta-dah! Uhum.
+I found it hard find a Java library to solve linear equations that uses more than 3 variables so then I make one. And actually this is a code used for my 6th term final project of Text Processing subject, then modified and remixed then ta-dah! Uhum.
 Click here for more about [Gauss-Jordan](https://en.wikipedia.org/wiki/Gaussian_elimination) elimination method.
 
 # Javadoc
--------
 
 To be released soon. Soon. Really soon.
 
 # Features
---------
 - Tiny size addition to your application, only **13kb** for everything
 - Operating on array and arraylist for better performance
 - No dependency
 - Easy to use
 
 # Maven
------
 Still wondering whether should be putted on central repository or not. Hmm..
 
 # Usage
-------------------------------------
 Beforehand, make sure the classes already loaded magnificently in the project. Then follow these 5-step of usage :
 
 First! simply instantiate the Gaugau class.
@@ -65,7 +60,6 @@ for (int i = 0; i < result.size(); i++) {
 
 
 # Example
-------------------------------------
 ```java
 Gaugau gaugau = new Gaugau();
 
