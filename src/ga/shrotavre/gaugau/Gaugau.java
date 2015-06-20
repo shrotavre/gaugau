@@ -6,53 +6,44 @@ import java.util.ArrayList;
  * Created by Shrotavre on 6/12/2015.
  */
 public class Gaugau {
-    private ArrayList<LinearEquation> linearEquationArrayList;
-    private ArrayList<Float> resultArrayList;
+    private ArrayList<LinearEquation> linearEquationList;
+    private ArrayList<Float> variableSolutionList; // Storing result of process (the value of variables)
 
     public Gaugau() {
-        this.linearEquationArrayList = new ArrayList<>();
-        this.resultArrayList = new ArrayList<>();
+        this.linearEquationList = new ArrayList<>();
+        this.variableSolutionList = new ArrayList<>();
     }
 
     // Initialization methods
     public void addLinearEquation(LinearEquation linearEquation) {
-        this.linearEquationArrayList.add(linearEquation);
+        this.linearEquationList.add(linearEquation);
     }
 
     public void removeLinearEquation(int linearEquationIndex) {
-        this.linearEquationArrayList.remove(linearEquationIndex);
+        this.linearEquationList.remove(linearEquationIndex);
     }
 
     public void removeLinearEquation(LinearEquation linearEquation) {
-        this.linearEquationArrayList.remove(linearEquation);
+        this.linearEquationList.remove(linearEquation);
     }
 
     // Elmination process
     public final void process(boolean roundResult) throws Exception {
-        this.process();
-        if (roundResult) {
-            for (int i = 0; i < resultArrayList.size(); i++) {
-                resultArrayList.set(i, (float) Math.round(resultArrayList.get(i)));
-            }
-        }
-    }
-
-    public final void process() throws Exception {
         int linearEquationCount, variableCount;
 
-        evalLinearEquations();
+        evaluateLinearEquations();
 
         // Value validating
-        if (linearEquationArrayList.size() < 2) {
+        if (linearEquationList.size() < 2) {
             throw new ArithmeticException("Linear equations provided is not enough to find solution");
         }
 
         // Elimination logics
-        linearEquationCount = linearEquationArrayList.size();
-        variableCount = linearEquationArrayList.get(0).getVariableCount();
+        linearEquationCount = linearEquationList.size();
+        variableCount = linearEquationList.get(0).getVariableCount();
 
-        for (int i = 0; i < linearEquationArrayList.size(); i++) {
-            float[] currentVector = linearEquationArrayList.get(i).toArray();
+        for (int i = 0; i < linearEquationList.size(); i++) {
+            float[] currentVector = linearEquationList.get(i).toArray();
             if (currentVector.length - 1 < variableCount) {
                 variableCount = currentVector.length;
             }
@@ -64,9 +55,9 @@ public class Gaugau {
             float[] newArray = new float[variableCount + 1];
 
             for (int j = 0; j < variableCount; j++) {
-                newArray[j] = linearEquationArrayList.get(i).getVariable(j);
+                newArray[j] = linearEquationList.get(i).getVariable(j);
             }
-            newArray[variableCount] = linearEquationArrayList.get(i).getConstant();
+            newArray[variableCount] = linearEquationList.get(i).getConstant();
             inputList.add(newArray);
         }
 
@@ -80,7 +71,7 @@ public class Gaugau {
             }
         }
 
-//        printMatrix(processArray);
+        printMatrix(processArray);
 
         System.out.println();
 
@@ -99,35 +90,51 @@ public class Gaugau {
                 //  if k is not i, then swap row i with row k
                 if (k != i) {
                     swap(processArray, i, k, j);
-//                    printMatrix(processArray);
+                    printMatrix(processArray);
                 }
 
                 // if ProcessingArray[i][j] is not 1, then divide row i by ProcessingArray[i][j]
                 if (processArray[i][j] != 1) {
                     divide(processArray, i, j);
-//                    printMatrix(processArray);
+                    printMatrix(processArray);
                 }
 
                 // eliminate all other non-zero entries from col j by subtracting from each
                 // row (other than i) an appropriate multiple of row i
                 eliminate(processArray, i, j);
-//                printMatrix(processArray);
+                printMatrix(processArray);
                 i++;
             }
             j++;
         }
 
-        for (int k = 1; k <= variableCount; k++) {
-            float nilaiCurrentTerm = processArray[k][variableCount + 1];
-            resultArrayList.add(nilaiCurrentTerm);
+        // Check validity of result array (Check if wheter every variables already have their value)
+        for (int k = 0; k < variableCount; k++) {
+
+        }
+
+        // Inserting value to result array
+        try {
+            for (int k = 1; k <= variableCount; k++) {
+                float currentValue = processArray[k][variableCount + 1];
+                if (roundResult) currentValue = (float) Math.round(currentValue);
+
+                variableSolutionList.add(currentValue);
+            }
+        }catch (ArrayIndexOutOfBoundsException e){
+            throw new ArrayIndexOutOfBoundsException("Too little linear equations to solve the problem. Provide more linear equations.");
         }
     }
 
-    private void evalLinearEquations() {
+    public final void process() throws Exception {
+        this.process(true);
+    }
+
+    private void evaluateLinearEquations() {
         // Validate variable counts
-        int variableCount = linearEquationArrayList.get(0).getVariableCount();
-        for (int i = 0; i < linearEquationArrayList.size(); i++) {
-            LinearEquation currentLinearEquation = linearEquationArrayList.get(i);
+        int variableCount = linearEquationList.get(0).getVariableCount();
+        for (int i = 0; i < linearEquationList.size(); i++) {
+            LinearEquation currentLinearEquation = linearEquationList.get(i);
             variableCount = variableCount < currentLinearEquation.getVariableCount() ? currentLinearEquation.getVariableCount() : variableCount;
         }
     }
@@ -176,14 +183,14 @@ public class Gaugau {
 
     // Helpers
     public ArrayList<Float> getResult() {
-        return resultArrayList;
+        return variableSolutionList;
     }
 
     public Object[] getResultArray() {
-        return resultArrayList.toArray();
+        return variableSolutionList.toArray();
     }
 
     public float getVariableValue(int variableIndex) {
-        return resultArrayList.get(variableIndex);
+        return variableSolutionList.get(variableIndex);
     }
 }
